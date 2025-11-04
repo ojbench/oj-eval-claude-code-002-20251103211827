@@ -330,11 +330,9 @@ std::ostream &operator<<(std::ostream &os, const int2048 &x) {
   os << x.a[i];
   for (--i; i >= 0; --i) {
     int v = x.a[i];
-    // pad to BASE_DIGS digits (4)
-    os << (v / 1000);
-    os << ((v / 100) % 10);
-    os << ((v / 10) % 10);
-    os << (v % 10);
+    char buf[5]; buf[4] = '\0';
+    for (int k = 3; k >= 0; --k) { buf[k] = char('0' + (v % 10)); v /= 10; }
+    os << buf;
   }
   return os;
 }

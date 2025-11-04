@@ -62,10 +62,11 @@ void int2048::print() {
   for (--i; i >= 0; --i) {
     int v = a[i];
     // print exactly BASE_DIGS digits with leading zeros (BASE=10000 -> 4 digits)
-    std::cout << (v / 1000);
-    std::cout << ((v / 100) % 10);
-    std::cout << ((v / 10) % 10);
-    std::cout << (v % 10);
+    char buf[5];
+    buf[4] = '\0';
+    int vv = v;
+    for (int k = 3; k >= 0; --k) { buf[k] = char('0' + (vv % 10)); vv /= 10; }
+    std::cout << buf;
   }
 }
 
