@@ -99,14 +99,16 @@ int2048 int2048::sub_abs(const int2048 &x, const int2048 &y) {
 
 // ===== operators for Integer1 =====
 int2048 &int2048::add(const int2048 &b) {
-  if (neg == b.neg) {
-    *this = add_abs(*this, b);
-    this->neg = neg; // same sign
+  bool sx = this->neg; bool sb = b.neg;
+  if (sx == sb) {
+    int2048 r = add_abs(*this, b);
+    r.neg = sx && !r.is_zero();
+    *this = r;
   } else {
     int cmp = abs_compare(b);
     if (cmp == 0) { a.clear(); neg = false; }
-    else if (cmp > 0) { *this = sub_abs(*this, b); this->neg = neg; }
-    else { *this = sub_abs(b, *this); this->neg = b.neg; }
+    else if (cmp > 0) { int2048 r = sub_abs(*this, b); r.neg = sx; *this = r; }
+    else { int2048 r = sub_abs(b, *this); r.neg = sb; *this = r; }
   }
   return *this;
 }
@@ -114,12 +116,16 @@ int2048 &int2048::add(const int2048 &b) {
 int2048 add(int2048 a, const int2048 &b) { a.add(b); return a; }
 
 int2048 &int2048::minus(const int2048 &b) {
-  if (neg != b.neg) { *this = add_abs(*this, b); this->neg = neg; }
-  else {
+  bool sx = this->neg; bool sb = b.neg;
+  if (sx != sb) {
+    int2048 r = add_abs(*this, b);
+    r.neg = sx && !r.is_zero();
+    *this = r;
+  } else {
     int cmp = abs_compare(b);
     if (cmp == 0) { a.clear(); neg = false; }
-    else if (cmp > 0) { *this = sub_abs(*this, b); this->neg = neg; }
-    else { *this = sub_abs(b, *this); this->neg = !b.neg; }
+    else if (cmp > 0) { int2048 r = sub_abs(*this, b); r.neg = sx; *this = r; }
+    else { int2048 r = sub_abs(b, *this); r.neg = !sb; *this = r; }
   }
   return *this;
 }
